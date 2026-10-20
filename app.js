@@ -1,4 +1,5 @@
 const STORAGE_KEY = "mis-gastos-data-v1";
+const CHART_STORAGE_KEY = "mis-gastos-chart-v1";
 const currency = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
 const monthFormatter = new Intl.DateTimeFormat("es-CL", { month: "long", year: "numeric" });
 const dateFormatter = new Intl.DateTimeFormat("es-CL", { day: "numeric", month: "short" });
@@ -34,6 +35,7 @@ function loadData() {
 let data = loadData();
 let selectedColor = "#0F766E";
 let toastTimer;
+let chartType = localStorage.getItem(CHART_STORAGE_KEY) || "ring";
 
 const el = (id) => document.getElementById(id);
 const localDateValue = (date = new Date()) => {
@@ -85,9 +87,33 @@ function renderSummary() {
   el("alertTotal").textContent = exceeded.length;
   el("alertNote").textContent = exceeded.length ? `${exceeded.length === 1 ? "Una categoría superó" : "Categorías superaron"} su límite` : "Todo bajo control";
   el("totalBudgetLabel").textContent = currency.format(budget);
-  el("totalRingLabel").textContent = `${Math.round(percentage)}%`;
-  el("totalRing").style.background = `conic-gradient(var(--yellow) ${percentage * 3.6}deg, rgba(255,255,255,.15) 0deg)`;
+  renderChart(percentage, spent);
   el("budgetHeadline").textContent = !budget ? "Define presupuestos para medir tus gastos." : available >= 0 ? `Te quedan ${currency.format(available)} de tu presupuesto mensual.` : `Vas ${currency.format(Math.abs(available))} sobre tu presupuesto mensual.`;
+}
+
+function renderChart(percentage, spent) {
+  const chart = el("totalRing");
+  const label = `${Math.round(percentage)}%`;
+  chart.className = "ring";
+  chart.innerHTML = `<span>${label}</span>`;
+  if (chartType === "bars") {
+    const maxSpent = Math.max(...data.categories.map((category) => expensesFor(category.id)), 1);
+    chart.classList.add("chart-bars");
+    chart.innerHTML = `${data.categories.slice(0, 5).map((category) => `<i class="chart-bar" style="height:${Math.max(5, Math.round((expensesFor(category.id) / maxSpent) * 60))}px;--bar-color:${category.color}"></i>`).join("")}<span>${label}</span>`;
+  } else if (chartType === "pie") {
+    let angle = 0;
+    const slices = data.categories.map((category) => {
+      const next = spent ? angle + (expensesFor(category.id) / spent) * 360 : angle;
+      const slice = `${category.color} ${angle}deg ${next}deg`;
+      angle = next;
+      return slice;
+    });
+    chart.classList.add("chart-pie");
+    chart.style.background = `conic-gradient(${slices.join(",") || "rgba(255,255,255,.15) 0deg 360deg"}, rgba(255,255,255,.15) ${angle}deg 360deg)`;
+  } else {
+    chart.style.background = `conic-gradient(var(--yellow) ${percentage * 3.6}deg, rgba(255,255,255,.15) 0deg)`;
+  }
+  document.querySelectorAll("[data-chart-type]").forEach((button) => button.classList.toggle("active", button.dataset.chartType === chartType));
 }
 
 function renderCategories() {
@@ -241,6 +267,22 @@ function setColor(color) {
 }
 
 document.addEventListener("click", (event) => {
+  if (event.target.closest("#chartTrigger")) {
+    const picker = el("chartPicker");
+    picker.hidden = !picker.hidden;
+    el("chartTrigger").setAttribute("aria-expanded", String(!picker.hidden));
+    return;
+  }
+  const chartOption = event.target.closest("[data-chart-type]");
+  if (chartOption) {
+    chartType = chartOption.dataset.chartType;
+    localStorage.setItem(CHART_STORAGE_KEY, chartType);
+    el("chartPicker").hidden = true;
+    el("chartTrigger").setAttribute("aria-expanded", "false");
+    render();
+    return;
+  }
+  if (!event.target.closest(".chart-control")) { el("chartPicker").hidden = true; el("chartTrigger").setAttribute("aria-expanded", "false"); }
   const opener = event.target.closest("[data-open-modal]");
   if (opener) openModal(opener.dataset.openModal);
   if (event.target.matches("[data-close-modal]") || event.target.classList.contains("modal-backdrop")) closeModals();

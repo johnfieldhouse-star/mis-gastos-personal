@@ -63,7 +63,17 @@
             <p class="hero-subtitle" id="budgetHeadline">Agrega tu primer gasto para comenzar.</p>
           </div>
           <div class="hero-meter" aria-label="Uso total de presupuestos">
-            <div class="ring" id="totalRing"><span id="totalRingLabel">0%</span></div>
+            <div class="chart-control">
+              <button class="chart-trigger" id="chartTrigger" type="button" aria-label="Cambiar tipo de gráfico" aria-expanded="false" aria-controls="chartPicker">
+                <div class="ring" id="totalRing"><span id="totalRingLabel">0%</span></div>
+              </button>
+              <div class="chart-picker" id="chartPicker" hidden>
+                <p>Elige un gráfico</p>
+                <button type="button" data-chart-type="ring"><i class="chart-preview preview-ring"></i>Anillo</button>
+                <button type="button" data-chart-type="bars"><i class="chart-preview preview-bars"><b></b><b></b><b></b></i>Barras</button>
+                <button type="button" data-chart-type="pie"><i class="chart-preview preview-pie"></i>Distribución</button>
+              </div>
+            </div>
             <p><strong id="totalBudgetLabel">$0</strong><br />presupuestado</p>
           </div>
           <div class="hero-decoration hero-decoration-one"></div>
