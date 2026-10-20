@@ -32,6 +32,10 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9M12 3v9h9" /><path d="M7.5 13.5a5 5 0 0 0 5 5" /></svg>
             Categorías
           </a>
+          <a class="nav-link" href="#graficos" data-view="graficos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16M8 15l3-3 3 2 5-6" /></svg>
+            Gráficos
+          </a>
           <a class="nav-link" href="#presupuestos" data-view="presupuestos">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h4" /></svg>
             Presupuestos
@@ -169,6 +173,30 @@
             <div class="budget-rows" id="budgetRows"></div>
             <button class="primary-submit" type="submit">Guardar presupuestos</button>
           </form>
+        </section>
+
+        <section class="graphs-view" id="graficos" hidden aria-labelledby="graphsViewTitle">
+          <div class="category-view-heading">
+            <div>
+              <p class="section-kicker">VISUALIZA TUS GASTOS</p>
+              <h2 id="graphsViewTitle">Elige tu gráfico</h2>
+              <p>Selecciona la vista que te resulte más clara. Se actualizará automáticamente en tu Resumen.</p>
+            </div>
+          </div>
+          <div class="graph-options">
+            <button class="graph-option" type="button" data-chart-type="ring">
+              <span class="graph-demo demo-ring"><b></b><strong>68%</strong></span>
+              <span><strong>Anillo de presupuesto</strong><small>Ideal para ver cuánto llevas gastado del total mensual.</small></span>
+            </button>
+            <button class="graph-option" type="button" data-chart-type="bars">
+              <span class="graph-demo demo-bars"><b></b><b></b><b></b><b></b></span>
+              <span><strong>Barras por categoría</strong><small>Compara rápidamente cuáles son tus gastos más altos.</small></span>
+            </button>
+            <button class="graph-option" type="button" data-chart-type="pie">
+              <span class="graph-demo demo-pie"><strong>Gastos</strong></span>
+              <span><strong>Distribución de gastos</strong><small>Muestra qué porcentaje del gasto corresponde a cada categoría.</small></span>
+            </button>
+          </div>
         </section>
       </section>
     </main>

@@ -314,18 +314,20 @@ document.addEventListener("input", (event) => {
 function showView(view) {
   const categoryView = view === "categorias";
   const budgetView = view === "presupuestos";
-  el("dashboardView").hidden = categoryView || budgetView;
+  const graphsView = view === "graficos";
+  el("dashboardView").hidden = categoryView || budgetView || graphsView;
   el("categorias").hidden = !categoryView;
   el("presupuestos").hidden = !budgetView;
+  el("graficos").hidden = !graphsView;
   document.querySelectorAll(".nav-link").forEach((item) => item.classList.toggle("active", item.dataset.view === view));
   if (categoryView || budgetView) window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 document.querySelectorAll(".nav-link").forEach((link) => link.addEventListener("click", (event) => {
   const view = link.dataset.view;
-  if (view === "categorias" || view === "presupuestos") {
+  if (view !== "inicio") {
     event.preventDefault();
-    history.replaceState(null, "", "#categorias");
+    history.replaceState(null, "", `#${view}`);
     showView(view);
     return;
   }
@@ -374,7 +376,7 @@ el("categoryForm").addEventListener("submit", (event) => {
 
 initialiseControls();
 render();
-showView(window.location.hash === "#categorias" ? "categorias" : window.location.hash === "#presupuestos" ? "presupuestos" : "inicio");
+showView(["categorias", "presupuestos", "graficos"].includes(window.location.hash.slice(1)) ? window.location.hash.slice(1) : "inicio");
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
