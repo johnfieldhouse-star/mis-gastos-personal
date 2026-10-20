@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f766e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Mis Gastos" />
+    <title>Mis Gastos</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar" aria-label="Navegación principal">
+        <a class="brand" href="#inicio" aria-label="Mis Gastos, inicio">
+          <span class="brand-mark" aria-hidden="true">$</span>
+          <span>Mis Gastos</span>
+        </a>
+
+        <nav class="nav-links">
+          <a class="nav-link active" href="#inicio" data-view="inicio">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5h-5.2v-6.5H8.7V21H3.5a.5.5 0 0 1-.5-.5v-9.7Z" /></svg>
+            Resumen
+          </a>
+          <a class="nav-link" href="#movimientos" data-view="movimientos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 12h14M5 19h9" /></svg>
+            Movimientos
+          </a>
+          <a class="nav-link" href="#categorias" data-view="categorias">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9M12 3v9h9" /><path d="M7.5 13.5a5 5 0 0 0 5 5" /></svg>
+            Categorías
+          </a>
+          <a class="nav-link" href="#presupuestos" data-view="presupuestos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h4" /></svg>
+            Presupuestos
+          </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <p class="month-label" id="sidebarMonth"></p>
+          <button class="text-button" id="resetData" type="button">Reiniciar datos</button>
+        </div>
+      </aside>
+
+      <section class="content">
+        <header class="topbar" id="inicio">
+          <div>
+            <p class="eyebrow" id="currentDate"></p>
+            <h1>Hola, Juan <span aria-hidden="true">👋</span></h1>
+          </div>
+          <button class="add-button" type="button" data-open-modal="expenseModal">
+            <span aria-hidden="true">+</span> Registrar gasto
+          </button>
+        </header>
+
+        <div id="dashboardView">
+        <section class="hero-card" aria-labelledby="heroTitle">
+          <div class="hero-copy">
+            <p class="hero-overline">GASTOS DE <span id="monthName"></span></p>
+            <h2 id="heroTitle">$0</h2>
+            <p class="hero-subtitle" id="budgetHeadline">Agrega tu primer gasto para comenzar.</p>
+          </div>
+          <div class="hero-meter" aria-label="Uso total de presupuestos">
+            <div class="ring" id="totalRing"><span id="totalRingLabel">0%</span></div>
+            <p><strong id="totalBudgetLabel">$0</strong><br />presupuestado</p>
+          </div>
+          <div class="hero-decoration hero-decoration-one"></div>
+          <div class="hero-decoration hero-decoration-two"></div>
+        </section>
+
+        <section class="summary-grid" aria-label="Resumen financiero">
+          <article class="summary-card accent-teal">
+            <div class="summary-icon icon-teal" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15l3-3 3 2 5-6" /></svg>
+            </div>
+            <p>Gastado este mes</p>
+            <strong id="spentTotal">$0</strong>
+            <span class="summary-note" id="spentCount">0 movimientos</span>
+          </article>
+          <article class="summary-card accent-yellow">
+            <div class="summary-icon icon-yellow" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 3v18M16 7.5c0-1.7-1.8-3-4-3s-4 1.2-4 3 1.8 3 4 3 4 1.2 4 3-1.8 3-4 3-4-1.2-4-3" /></svg>
+            </div>
+            <p>Presupuesto disponible</p>
+            <strong id="availableTotal">$0</strong>
+            <span class="summary-note" id="availableNote">Sin presupuestos definidos</span>
+          </article>
+          <article class="summary-card accent-coral">
+            <div class="summary-icon icon-coral" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 3.8 2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0Z" /></svg>
+            </div>
+            <p>Presupuestos en alerta</p>
+            <strong id="alertTotal">0</strong>
+            <span class="summary-note" id="alertNote">Todo bajo control</span>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel category-panel" id="categorySummary">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">PRESUPUESTOS</p>
+                <h2>Por categoría</h2>
+              </div>
+              <button class="link-button" type="button" data-open-modal="categoryModal">+ Categoría</button>
+            </div>
+            <div class="category-list" id="categoryList"></div>
+            <button class="add-category-empty" type="button" data-open-modal="categoryModal" id="emptyCategoryButton">
+              <span>+</span> Crea tu primera categoría
+            </button>
+          </article>
+
+          <article class="panel recent-panel" id="movimientos">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">ÚLTIMOS REGISTROS</p>
+                <h2>Movimientos recientes</h2>
+              </div>
+              <button class="link-button" type="button" id="showAllTransactions">Ver todos</button>
+            </div>
+            <div class="transaction-list" id="transactionList"></div>
+            <div class="empty-transactions" id="emptyTransactions">
+              <span class="empty-illustration" aria-hidden="true">✦</span>
+              <p>Aún no tienes gastos registrados.</p>
+              <button class="link-button" type="button" data-open-modal="expenseModal">Registrar un gasto</button>
+            </div>
+          </article>
+        </section>
+        </div>
+
+        <section class="categories-view" id="categorias" hidden aria-labelledby="categoriesViewTitle">
+          <div class="category-view-heading">
+            <div>
+              <p class="section-kicker">ORGANIZA TUS GASTOS</p>
+              <h2 id="categoriesViewTitle">Tus categorías</h2>
+              <p>Crea las categorías que necesitas y asigna un presupuesto mensual a cada una.</p>
+            </div>
+            <button class="add-button" type="button" data-open-modal="categoryModal"><span aria-hidden="true">+</span> Agregar categoría</button>
+          </div>
+          <div class="category-cards" id="categoryCards"></div>
+          <button class="add-category-card" type="button" data-open-modal="categoryModal">
+            <span aria-hidden="true">+</span>
+            <strong>Agregar otra categoría</strong>
+            <small>Define su presupuesto mensual</small>
+          </button>
+        </section>
+
+        <section class="budgets-view" id="presupuestos" hidden aria-labelledby="budgetsViewTitle">
+          <div class="category-view-heading">
+            <div>
+              <p class="section-kicker">CONTROL MENSUAL</p>
+              <h2 id="budgetsViewTitle">Presupuestos por categoría</h2>
+              <p>Define cuánto quieres gastar en cada categoría durante el mes. Te avisaremos al superar el límite.</p>
+            </div>
+          </div>
+          <form class="budget-form" id="budgetForm">
+            <div class="budget-rows" id="budgetRows"></div>
+            <button class="primary-submit" type="submit">Guardar presupuestos</button>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <div class="modal-backdrop" id="expenseModal" role="dialog" aria-modal="true" aria-labelledby="expenseModalTitle" hidden>
+      <form class="modal" id="expenseForm">
+        <button class="close-modal" type="button" data-close-modal aria-label="Cerrar">×</button>
+        <p class="section-kicker">NUEVO MOVIMIENTO</p>
+        <h2 id="expenseModalTitle">Registrar gasto</h2>
+        <div class="form-row">
+          <label>Monto
+            <div class="currency-input"><span>$</span><input id="expenseAmount" name="amount" inputmode="numeric" type="text" placeholder="0" required /></div>
+          </label>
+          <label>Categoría
+            <select id="expenseCategory" name="category" required></select>
+          </label>
+        </div>
+        <label>Fecha
+          <input id="expenseDate" name="date" type="date" required />
+        </label>
+        <p class="form-error" id="expenseError" role="alert"></p>
+        <button class="primary-submit" type="submit">Guardar gasto</button>
+      </form>
+    </div>
+
+    <div class="modal-backdrop" id="categoryModal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle" hidden>
+      <form class="modal" id="categoryForm">
+        <button class="close-modal" type="button" data-close-modal aria-label="Cerrar">×</button>
+        <p class="section-kicker">ORGANIZA TUS GASTOS</p>
+        <h2 id="categoryModalTitle">Nueva categoría</h2>
+        <label>Nombre de la categoría
+          <input id="categoryName" name="name" type="text" placeholder="Ej: Mascotas" maxlength="28" required />
+        </label>
+        <label>Presupuesto mensual
+          <div class="currency-input"><span>$</span><input id="categoryBudget" name="budget" inputmode="numeric" type="text" placeholder="0" required /></div>
+          <small>Recibirás una alerta al superar este monto.</small>
+        </label>
+        <label>Color
+          <div class="color-picker" id="colorPicker" role="radiogroup" aria-label="Elige un color"></div>
+        </label>
+        <input id="categoryColor" name="color" type="hidden" value="#0F766E" />
+        <p class="form-error" id="categoryError" role="alert"></p>
+        <button class="primary-submit" type="submit">Crear categoría</button>
+      </form>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
